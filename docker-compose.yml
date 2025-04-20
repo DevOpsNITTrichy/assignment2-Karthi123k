@@ -1,0 +1,20 @@
+version: '3'
+services:
+  db:
+    image: mysql:latest
+    container_name: mysql-container
+    environment:
+      MYSQL_ROOT_PASSWORD: root  # Change this password if needed
+    ports:
+      - "3307:3306"  # Mapping host port 3307 to container port 3306
+  
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin-container
+    environment:
+      PMA_HOST: db  # This tells phpMyAdmin to connect to the 'db' container
+      MYSQL_ROOT_PASSWORD: root  # Same as MySQL password
+    ports:
+      - "8080:80"  # Expose phpMyAdmin on port 8080
+    depends_on:
+      - db  # Ensure phpMyAdmin starts after MySQL

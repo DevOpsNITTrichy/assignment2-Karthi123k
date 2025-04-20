@@ -1,0 +1,243 @@
+Windows PowerShell
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Install the latest PowerShell for new features and improvements! https://aka.ms/PSWindows
+
+PS C:\WINDOWS\system32> docker images
+REPOSITORY   TAG       IMAGE ID   CREATED   SIZE
+PS C:\WINDOWS\system32> docker pull mysql
+Using default tag: latest
+latest: Pulling from library/mysql
+47a2982daa21: Pull complete
+aa8a3958f09f: Pull complete
+f488b2cd8494: Pull complete
+cea172a6e83b: Pull complete
+9451290759df: Pull complete
+634d7076afe3: Pull complete
+2275c0ff11a0: Pull complete
+fa811e9a869e: Pull complete
+2792ea2d4e0e: Pull complete
+84e4e5ea3754: Pull complete
+Digest: sha256:7839322bd6c3174a699586c3ea36314c59b61b4ce01b4146951818b94aef5fd7
+Status: Downloaded newer image for mysql:latest
+docker.io/library/mysql:latest
+PS C:\WINDOWS\system32> docker images
+REPOSITORY   TAG       IMAGE ID       CREATED      SIZE
+mysql        latest    7839322bd6c3   5 days ago   1.17GB
+PS C:\WINDOWS\system32> docker run --name mysql-container -e MYSQL_ROOT_PASSWORD=root -p 3306:3306 -d mysql
+>>
+6d0c8e88e3022dccc1dea3be1510c185723bb5994fabb00bdd662048ad9ecc43
+docker: Error response from daemon: Ports are not available: exposing port TCP 0.0.0.0:3306 -> 127.0.0.1:0: listen tcp 0.0.0.0:3306: bind: Only one usage of each socket address (protocol/network address/port) is normally permitted.
+
+Run 'docker run --help' for more information
+PS C:\WINDOWS\system32> docker run --name mysql-container -e MYSQL_ROOT_PASSWORD=root -p 3307:3306 -d mysql
+docker: Error response from daemon: Conflict. The container name "/mysql-container" is already in use by container "6d0c8e88e3022dccc1dea3be1510c185723bb5994fabb00bdd662048ad9ecc43". You have to remove (or rename) that container to be able to reuse that name.
+
+Run 'docker run --help' for more information
+PS C:\WINDOWS\system32> docker rm mysql-container
+>>
+mysql-container
+PS C:\WINDOWS\system32> docker images
+REPOSITORY   TAG       IMAGE ID       CREATED      SIZE
+mysql        latest    7839322bd6c3   5 days ago   1.17GB
+PS C:\WINDOWS\system32> docker run --name mysql-container -e MYSQL_ROOT_PASSWORD=root -p 3307:3306 -d mysql
+b7b6081dfbc21bf6c1f71f56a0c094a50ce4fa24058b54c2ea8eb6b7c64f2731
+PS C:\WINDOWS\system32> docker ps
+CONTAINER ID   IMAGE     COMMAND                  CREATED          STATUS          PORTS                               NAMES
+b7b6081dfbc2   mysql     "docker-entrypoint.s…"   22 seconds ago   Up 21 seconds   33060/tcp, 0.0.0.0:3307->3306/tcp   mysql-container
+PS C:\WINDOWS\system32> docker ps -a
+CONTAINER ID   IMAGE     COMMAND                  CREATED          STATUS          PORTS                               NAMES
+b7b6081dfbc2   mysql     "docker-entrypoint.s…"   32 seconds ago   Up 31 seconds   33060/tcp, 0.0.0.0:3307->3306/tcp   mysql-container
+PS C:\WINDOWS\system32> docker exec -it test-mysql bash
+Error response from daemon: No such container: test-mysql
+PS C:\WINDOWS\system32> docker exec -it mysql bash
+Error response from daemon: No such container: mysql
+PS C:\WINDOWS\system32> docker exec -it mysql-container bash
+bash-5.1# mysql -u root -p
+Enter password:
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 9
+Server version: 9.3.0 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2025, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> select "hello world";
++-------------+
+| hello world |
++-------------+
+| hello world |
++-------------+
+1 row in set (0.001 sec)
+
+mysql> show tables
+    -> ;
+ERROR 1046 (3D000): No database selected
+mysql> show tables;
+ERROR 1046 (3D000): No database selected
+mysql> show databases
+    -> ;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+4 rows in set (0.022 sec)
+
+mysql> create database karthik
+    -> ;
+Query OK, 1 row affected (0.019 sec)
+
+mysql> use karthik;
+Database changed
+mysql> create table kk(id int auto_increment primary key, name varchar(50), age int);
+Query OK, 0 rows affected (0.054 sec)
+
+mysql> insert in to kk(name, age) values('alice', 25),('dsfs',40);
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'in to kk(name, age) values('alice', 25),('dsfs',40)' at line 1
+mysql> insert into kk(name, age) values('alice', 25),('dsfs',40);
+Query OK, 2 rows affected (0.017 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+mysql> show tables
+    -> ;
++-------------------+
+| Tables_in_karthik |
++-------------------+
+| kk                |
++-------------------+
+1 row in set (0.004 sec)
+
+mysql> select 8 from kk;
++---+
+| 8 |
++---+
+| 8 |
+| 8 |
++---+
+2 rows in set (0.001 sec)
+
+mysql> select * from kk;
++----+-------+------+
+| id | name  | age  |
++----+-------+------+
+|  1 | alice |   25 |
+|  2 | dsfs  |   40 |
++----+-------+------+
+2 rows in set (0.001 sec)
+
+mysql> exit;
+Bye
+bash-5.1# exit;
+exit
+PS C:\WINDOWS\system32> docker ps
+CONTAINER ID   IMAGE     COMMAND                  CREATED          STATUS          PORTS                               NAMES
+b7b6081dfbc2   mysql     "docker-entrypoint.s…"   16 minutes ago   Up 16 minutes   33060/tcp, 0.0.0.0:3307->3306/tcp   mysql-container
+PS C:\WINDOWS\system32> mysql -h 127.0.0.1 -P 3307 -u root -p
+mysql : The term 'mysql' is not recognized as the name of a cmdlet, function, script file, or operable program. Check
+the spelling of the name, or if a path was included, verify that the path is correct and try again.
+At line:1 char:1
++ mysql -h 127.0.0.1 -P 3307 -u root -p
++ ~~~~~
+    + CategoryInfo          : ObjectNotFound: (mysql:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
+
+PS C:\WINDOWS\system32> docker run --name mysql-container -e MYSQL_ROOT_PASSWORD=root -p 3307:3306 -d mysql
+docker: Error response from daemon: Conflict. The container name "/mysql-container" is already in use by container "b7b6081dfbc21bf6c1f71f56a0c094a50ce4fa24058b54c2ea8eb6b7c64f2731". You have to remove (or rename) that container to be able to reuse that name.
+
+Run 'docker run --help' for more information
+PS C:\WINDOWS\system32> docker exec -it test-mysql bash
+Error response from daemon: No such container: test-mysql
+PS C:\WINDOWS\system32> docker exec -it mysql-container bash
+bash-5.1# mysql -u root -p
+Enter password:
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 20
+Server version: 9.3.0 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2025, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> exit
+Bye
+bash-5.1# mkdir mysql-phpmyadmin
+bash-5.1# cd mysql-phpmyadmin
+bash-5.1# nano docker-compose.yml
+bash: nano: command not found
+bash-5.1# exit;
+exit
+PS C:\WINDOWS\system32> mkdir mysql-phpmyadmin
+
+
+    Directory: C:\WINDOWS\system32
+
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+d-----        20-04-2025     09:49                mysql-phpmyadmin
+
+
+PS C:\WINDOWS\system32> cd mysql-phpmyadmin
+PS C:\WINDOWS\system32\mysql-phpmyadmin> nano docker-compose.yml
+nano : The term 'nano' is not recognized as the name of a cmdlet, function, script file, or operable program. Check
+the spelling of the name, or if a path was included, verify that the path is correct and try again.
+At line:1 char:1
++ nano docker-compose.yml
++ ~~~~
+    + CategoryInfo          : ObjectNotFound: (nano:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
+
+PS C:\WINDOWS\system32\mysql-phpmyadmin> notepad docker-compose.yml
+PS C:\WINDOWS\system32\mysql-phpmyadmin> code docker-compose.yml
+PS C:\WINDOWS\system32\mysql-phpmyadmin> docker-compose up -d
+time="2025-04-20T09:51:35+05:30" level=warning msg="C:\\WINDOWS\\system32\\mysql-phpmyadmin\\docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+[+] Running 21/21
+ ✔ phpmyadmin Pulled                                                                                              22.1s
+[+] Running 1/2
+ ✔ Network mysql-phpmyadmin_default  Created                                                                       0.1s
+ - Container mysql-container         Creating                                                                      0.1s
+Error response from daemon: Conflict. The container name "/mysql-container" is already in use by container "b7b6081dfbc21bf6c1f71f56a0c094a50ce4fa24058b54c2ea8eb6b7c64f2731". You have to remove (or rename) that container to be able to reuse that name.
+PS C:\WINDOWS\system32\mysql-phpmyadmin> docker ps
+CONTAINER ID   IMAGE     COMMAND                  CREATED          STATUS          PORTS                               NAMES
+b7b6081dfbc2   mysql     "docker-entrypoint.s…"   26 minutes ago   Up 26 minutes   33060/tcp, 0.0.0.0:3307->3306/tcp   mysql-container
+PS C:\WINDOWS\system32\mysql-phpmyadmin> docker stop mysql-container
+mysql-container
+PS C:\WINDOWS\system32\mysql-phpmyadmin> docker rm mysql-container
+mysql-container
+PS C:\WINDOWS\system32\mysql-phpmyadmin> docker-compose up -d
+time="2025-04-20T09:53:28+05:30" level=warning msg="C:\\WINDOWS\\system32\\mysql-phpmyadmin\\docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+[+] Running 2/2
+ ✔ Container mysql-container       Started                                                                         1.2s
+ ✔ Container phpmyadmin-container  Started                                                                         1.2s
+PS C:\WINDOWS\system32\mysql-phpmyadmin> docker-compose up -d
+time="2025-04-20T09:53:56+05:30" level=warning msg="C:\\WINDOWS\\system32\\mysql-phpmyadmin\\docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+[+] Running 2/2
+ ✔ Container mysql-container       Running                                                                         0.0s
+ ✔ Container phpmyadmin-container  Running                                                                         0.0s
+PS C:\WINDOWS\system32\mysql-phpmyadmin> docker ps
+CONTAINER ID   IMAGE                   COMMAND                  CREATED          STATUS          PORTS                               NAMES
+187137a4792b   phpmyadmin/phpmyadmin   "/docker-entrypoint.…"   35 seconds ago   Up 34 seconds   0.0.0.0:8080->80/tcp                phpmyadmin-container
+9ae5db4643e0   mysql:latest            "docker-entrypoint.s…"   36 seconds ago   Up 34 seconds   33060/tcp, 0.0.0.0:3307->3306/tcp   mysql-container
+PS C:\WINDOWS\system32\mysql-phpmyadmin>
+
+
+
+
+
+
+
+
+
